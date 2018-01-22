@@ -99,7 +99,19 @@ def process(src1_xls,src2_xls,res_xls):
     #wb=xlsxwriter.Workbook(res_xlsx) # 建立文件
     #ws=wb.add_worksheet('sheet1')
     wt = xlwt.Workbook()
-    ws=wt.add_sheet('Sheet1')
+    ws=wt.add_sheet('Sum')
+    ws1=wt.add_sheet('First')
+    num_1=3
+    num2_1=0
+    num_word_1=0
+    ws2=wt.add_sheet('Second')
+    num_2=3
+    num2_2=0
+    num_word_2=0
+    ws3=wt.add_sheet('Third')
+    num_3=3
+    num2_3=0
+    num_word_3=0
     src1_dict=readfirst(src1_xls)
     src2_dict,word_list=readsecond(src2_xls)
     num=3   #总的数目
@@ -113,11 +125,22 @@ def process(src1_xls,src2_xls,res_xls):
           u'终点',u'路径',u'方向',u'处所',u'起始',
           u'结束',u'时点',u'时段']
     flag=True
+    flag_s1=True
+    flag_s2=True
     f_w=open(u'例句统计信息.txt','w')
     f_w.write((u'编码'+'\t'+u'词语'+'\t'+u'合并前'+'\t'+u'合并后'+'\n').encode('utf-8'))
     #for word in src2_dict:
     for word in word_list:
         num_word+=1
+        sents=src2_dict[word]
+        for sent1 in sents[s1]:
+			if sent1[5]==u'是':
+				flag_s1=False
+				break
+        for sent2 in sents[s2]:
+            if sent2[11]==u'是':
+				flag_s2=False
+				break	
         if word in src1_dict:
             sentences=src1_dict[word]
             f_w.write((str(num_word)+'\t'+word+'\t'+str(len(src2_dict[word][s1])+len(src2_dict[word][s2]))+'\t').encode('utf-8'))
@@ -169,6 +192,87 @@ def process(src1_xls,src2_xls,res_xls):
                     obuff+=['  ']*6
                     obuff+=ibuff
                     src2_dict[word][s1].append(obuff)
+            if len(src2_dict[word][s1])+len(src2_dict[word][s2])<=3:
+				num_word_1+=1
+				if len(src2_dict[word][s1])>0:
+					for w in src2_dict[word][s1]:
+						for i,w_i in enumerate(w):
+							#print len(w), word,i+6,w_i,num+num2
+							ws1.write(num_1+num2_1,i+6,w_i)
+						num2_1+=1
+				if len(src2_dict[word][s2])>0:
+					for w in src2_dict[word][s2]:
+						for i,w_i in enumerate(w):
+							ws1.write(num_1+num2_1,i+6,w_i)
+						num2_1+=1	
+				if num2_1!=0:
+					ws1.write_merge(num_1,num_1+num2_1-1,0,0,num_word_1)
+					for j,w in enumerate(src2_dict[word][s0]):
+						ws1.write_merge(num_1,num_1+num2_1-1,j+1,j+1,w) 
+				else:
+					ws1.write_merge(num_1,num_1+num2_1,0,0,num_word_1)
+					for j,w in enumerate(src2_dict[word][s0]):
+						ws1.write_merge(num_1,num_1+num2_1,j+1,j+1,w) 
+					num2_1+=1
+				num_1+=num2_1
+				num2_1=0
+				flag_s1=True
+				flag_s2=True
+				
+            elif  not flag_s1 and not flag_s2:
+				num_word_2+=1
+				if len(src2_dict[word][s1])>0:
+					for w in src2_dict[word][s1]:
+						for i,w_i in enumerate(w):
+							#print len(w), word,i+6,w_i,num+num2
+							ws2.write(num_2+num2_2,i+6,w_i)
+						num2_2+=1
+				if len(src2_dict[word][s2])>0:
+					for w in src2_dict[word][s2]:
+						for i,w_i in enumerate(w):
+							ws2.write(num_2+num2_2,i+6,w_i)
+						num2_2+=1	
+				if num2_2!=0:
+					ws2.write_merge(num_2,num_2+num2_2-1,0,0,num_word_2)
+					for j,w in enumerate(src2_dict[word][s0]):
+						ws2.write_merge(num_2,num_2+num2_2-1,j+1,j+1,w) 
+				else:
+					ws2.write_merge(num_2,num_2+num2_2,0,0,num_word_2)
+					for j,w in enumerate(src2_dict[word][s0]):
+						ws2.write_merge(num_2,num_2+num2_2,j+1,j+1,w) 
+					num2_2+=1
+				num_2+=num2_2
+				num2_2=0
+				flag_s1=True
+				flag_s2=True
+            else:
+				num_word_3+=1
+				if len(src2_dict[word][s1])>0:
+					for w in src2_dict[word][s1]:
+						for i,w_i in enumerate(w):
+							#print len(w), word,i+6,w_i,num+num2
+							ws3.write(num_3+num2_3,i+6,w_i)
+						num2_3+=1
+				if len(src2_dict[word][s2])>0:
+					for w in src2_dict[word][s2]:
+						for i,w_i in enumerate(w):
+							ws3.write(num_3+num2_3,i+6,w_i)
+						num2_3+=1	
+				if num2_3!=0:
+					ws3.write_merge(num_3,num_3+num2_3-1,0,0,num_word_3)
+					for j,w in enumerate(src2_dict[word][s0]):
+						ws3.write_merge(num_3,num_3+num2_3-1,j+1,j+1,w) 
+				else:
+					ws3.write_merge(num_3,num_3+num2_3,0,0,num_word_3)
+					for j,w in enumerate(src2_dict[word][s0]):
+						ws3.write_merge(num_3,num_3+num2_3,j+1,j+1,w) 
+					num2_3+=1
+				num_3+=num2_3
+				num2_3=0
+				flag_s1=True
+				flag_s2=True
+				
+				
             if len(src2_dict[word][s1])>0:
                 for w in src2_dict[word][s1]:
                     for i,w_i in enumerate(w):
@@ -219,6 +323,85 @@ def process(src1_xls,src2_xls,res_xls):
             num+=num2
             num2=0
             pass
+            if len(src2_dict[word][s1])+len(src2_dict[word][s2])<=3:
+				num_word_1+=1
+				if len(src2_dict[word][s1])>0:
+					for w in src2_dict[word][s1]:
+						for i,w_i in enumerate(w):
+							#print len(w), word,i+6,w_i,num+num2
+							ws1.write(num_1+num2_1,i+6,w_i)
+						num2_1+=1
+				if len(src2_dict[word][s2])>0:
+					for w in src2_dict[word][s2]:
+						for i,w_i in enumerate(w):
+							ws1.write(num_1+num2_1,i+6,w_i)
+						num2_1+=1	
+				if num2_1!=0:
+					ws1.write_merge(num_1,num_1+num2_1-1,0,0,num_word_1)
+					for j,w in enumerate(src2_dict[word][s0]):
+						ws1.write_merge(num_1,num_1+num2_1-1,j+1,j+1,w) 
+				else:
+					ws1.write_merge(num_1,num_1+num2_1,0,0,num_word_1)
+					for j,w in enumerate(src2_dict[word][s0]):
+						ws1.write_merge(num_1,num_1+num2_1,j+1,j+1,w) 
+					num2_1+=1
+				num_1+=num2_1
+				num2_1=0
+				flag_s1=True
+				flag_s2=True
+				
+            elif  not flag_s1 and not flag_s2:
+				num_word_2+=1
+				if len(src2_dict[word][s1])>0:
+					for w in src2_dict[word][s1]:
+						for i,w_i in enumerate(w):
+							#print len(w), word,i+6,w_i,num+num2
+							ws2.write(num_2+num2_2,i+6,w_i)
+						num2_2+=1
+				if len(src2_dict[word][s2])>0:
+					for w in src2_dict[word][s2]:
+						for i,w_i in enumerate(w):
+							ws2.write(num_2+num2_2,i+6,w_i)
+						num2_2+=1	
+				if num2_2!=0:
+					ws2.write_merge(num_2,num_2+num2_2-1,0,0,num_word_2)
+					for j,w in enumerate(src2_dict[word][s0]):
+						ws2.write_merge(num_2,num_2+num2_2-1,j+1,j+1,w) 
+				else:
+					ws2.write_merge(num_2,num_2+num2_2,0,0,num_word_2)
+					for j,w in enumerate(src2_dict[word][s0]):
+						ws2.write_merge(num_2,num_2+num2_2,j+1,j+1,w) 
+					num2_2+=1
+				num_2+=num2_2
+				num2_2=0
+				flag_s1=True
+				flag_s2=True
+            else:
+				num_word_3+=1
+				if len(src2_dict[word][s1])>0:
+					for w in src2_dict[word][s1]:
+						for i,w_i in enumerate(w):
+							#print len(w), word,i+6,w_i,num+num2
+							ws3.write(num_3+num2_3,i+6,w_i)
+						num2_3+=1
+				if len(src2_dict[word][s2])>0:
+					for w in src2_dict[word][s2]:
+						for i,w_i in enumerate(w):
+							ws3.write(num_3+num2_3,i+6,w_i)
+						num2_3+=1	
+				if num2_3!=0:
+					ws3.write_merge(num_3,num_3+num2_3-1,0,0,num_word_3)
+					for j,w in enumerate(src2_dict[word][s0]):
+						ws3.write_merge(num_3,num_3+num2_3-1,j+1,j+1,w) 
+				else:
+					ws3.write_merge(num_3,num_3+num2_3,0,0,num_word_3)
+					for j,w in enumerate(src2_dict[word][s0]):
+						ws3.write_merge(num_3,num_3+num2_3,j+1,j+1,w) 
+					num2_3+=1
+				num_3+=num2_3
+				num2_3=0
+				flag_s1=True
+				flag_s2=True
     #wb.close()
     wt.save(res_xls)
     f_w.close()
