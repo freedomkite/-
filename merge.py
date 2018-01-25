@@ -134,11 +134,11 @@ def process(src1_xls,src2_xls,res_xls):
         num_word+=1
         sents=src2_dict[word]
         for sent1 in sents[s1]:
-			if sent1[5]==u'是':
+			if u'是' in sent1[5]:
 				flag_s1=False
 				break
         for sent2 in sents[s2]:
-            if sent2[11]==u'是':
+            if u'是' in sent2[11]:
 				flag_s2=False
 				break	
         if word in src1_dict:
@@ -192,7 +192,7 @@ def process(src1_xls,src2_xls,res_xls):
                     obuff+=['  ']*6
                     obuff+=ibuff
                     src2_dict[word][s1].append(obuff)
-            if len(src2_dict[word][s1])+len(src2_dict[word][s2])<=3:
+            if len(src2_dict[word][s1])+len(src2_dict[word][s2])<3:
 				num_word_1+=1
 				if len(src2_dict[word][s1])>0:
 					for w in src2_dict[word][s1]:
@@ -323,7 +323,7 @@ def process(src1_xls,src2_xls,res_xls):
             num+=num2
             num2=0
             pass
-            if len(src2_dict[word][s1])+len(src2_dict[word][s2])<=3:
+            if len(src2_dict[word][s1])+len(src2_dict[word][s2])<3:
 				num_word_1+=1
 				if len(src2_dict[word][s1])>0:
 					for w in src2_dict[word][s1]:
